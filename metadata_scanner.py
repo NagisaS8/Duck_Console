@@ -170,7 +170,6 @@ class OtherScanner:
             'Last Modified': datetime.datetime.fromtimestamp(mod_time),  # Last modified date
             'File Size (bytes)': os.path.getsize(self.path),  # File size
             'Operating System': self._try_identify_os(),  # Operating system #XXX: not what i wanted
-            'File Path': self.path  # Full path of the file
         }
 
     def _try_identify_os(self):
@@ -194,39 +193,5 @@ class OtherScanner:
             'Last Modified': self.metadata['Last Modified'].strftime("%Y-%m-%d %H:%M:%S"),  # Formatted last modified date
             'File Size': f"{self.metadata['File Size (bytes)']} bytes",  # File size in bytes
             'Operating System': self.metadata['Operating System'],  # OS
-            'File Path': self.metadata['File Path'],  # Full path of the file
         }
         return formatted_data
-
-#Example of usage
-# For Image
-image_scanner = ImageScanner()
-image_scanner.set_path(r"path\to\image")
-image_scanner.scan()
-formatted_image_data = image_scanner.format_data()
-print(formatted_image_data)
-
-# For Video
-video_scanner = VideoScanner()
-video_scanner.set_path(r"path\to\video")
-video_scanner.scan()
-formatted_video_data = video_scanner.format_data()
-print(formatted_video_data)
-
-# For Audio
-audio_scanner = AudioScanner()
-audio_scanner.set_path(r"path\to\audio")
-audio_scanner.scan()
-formatted_audio_data = audio_scanner.format_data()
-print(formatted_audio_data)
-
-
-# For Other files
-other_scanner = OtherScanner()
-other_scanner.set_path(r"path\to\other\file")  # Change to your file path
-try:
-    other_scanner.scan()
-    formatted_other_data = other_scanner.format_data()
-    print("Other File Data:", formatted_other_data)
-except FileNotFoundError as e:
-    print(e)
