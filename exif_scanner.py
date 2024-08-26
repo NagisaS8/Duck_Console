@@ -1,5 +1,5 @@
 import exifread
-import variables
+import config
 
 class Scanner:
     def __init__(self) -> None:
@@ -45,7 +45,7 @@ class Scanner:
                 lon = -lon
 
             # Generate Google Maps URL
-            self.loc_url = variables.GOOGLEMAPS_TEMPLATE_URL + f"{lat},{lon}"
+            self.loc_url = config.GOOGLEMAPS_TEMPLATE_URL + f"{lat},{lon}"
             return True
 
         return False

@@ -1,2 +1,2 @@
 import installer
-installer.pip_install()
+installer.run_installation()

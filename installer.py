@@ -12,7 +12,7 @@ def pip_install_requirements() -> None:
     """
     os.system('cmd /c "python -m pip install -r requirements.txt"')
 
-def pip_install():
+def run_installation():
     """
     Prepares environment and installs needed packages.
     """

@@ -1,6 +1,6 @@
 import json
 import requests
-import variables
+import config
 import random
 from tqdm import tqdm 
 
@@ -12,7 +12,7 @@ class Manager:
         self.candidates = []
         self.root_proxy_addr = ""
         self.update_threshold = update_threshold
-        self.used_proxy = 0
+        self.cycles_without_update = 0
         
         # Get the root proxy for proxy API requests.
         self._get_root_proxy()
@@ -59,13 +59,13 @@ class Manager:
         """
         Returns a usable proxy from the pool after updating the pool.
         """
-        self.used_proxy += 1
+        self.cycles_without_update += 1
         if len(self.pool) < 2:
             self.update_pool()
-            self.used_proxy = 0
-        if self.used_proxy >= self.update_threshold:
+            self.cycles_without_update = 0
+        if self.cycles_without_update >= self.update_threshold:
             self.update_pool()
-            self.used_proxy = 0
+            self.cycles_without_update = 0
 
         proxy = self._get_random_proxy()
         proxy_id = self.pool.index(proxy)
@@ -105,9 +105,9 @@ class Manager:
 
         # Request new proxy candidates using the root proxy
         if self.root_proxy_addr != "":
-            candidates_string = requests.get(variables.PROXYSCRAPE_API_URL, params=parameters, proxies=self.root_proxy_addr).text
+            candidates_string = requests.get(config.PROXYSCRAPE_API_URL, params=parameters, proxies=self.root_proxy_addr).text
         else:
-            candidates_string = requests.get(variables.PROXYSCRAPE_API_URL, params=parameters).text
+            candidates_string = requests.get(config.PROXYSCRAPE_API_URL, params=parameters).text
         candidate_list = candidates_string.split('\n')
         self.candidates = candidate_list
 
@@ -128,7 +128,7 @@ class Manager:
         """
         try:
             for i in range(5):
-                requests.get(variables.PROXY_TEST_URL, proxies={"http": address}, timeout=0.3)
+                requests.get(config.PROXY_TEST_URL, proxies={"http": address}, timeout=0.3)
             is_valid = True
         except:
             is_valid = False
@@ -143,3 +143,4 @@ class Manager:
             json.dump(self.pool, pool)
 
 #XXX: Note that some of the proxy servers get blocked.
+#TODO: Try to change proxy validity check logic to not save proxy servers that may be blocked by other sites. 
