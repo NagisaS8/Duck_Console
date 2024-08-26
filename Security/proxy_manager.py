@@ -142,5 +142,4 @@ class Manager:
         with open(self.proxypool_file, 'w') as pool:
             json.dump(self.pool, pool)
 
-#XXX: Note that some of the proxy servers get blocked.
 #TODO: Try to change proxy validity check logic to not save proxy servers that may be blocked by other sites. 
