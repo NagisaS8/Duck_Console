@@ -16,7 +16,6 @@ class Manager:
         
         # Get the root proxy for proxy API requests.
         self._get_root_proxy()
-        self.update_pool()
 
     def _get_root_proxy(self):
         """
@@ -78,7 +77,6 @@ class Manager:
         return self._format_proxy(proxy)
     
     def _get_random_proxy(self):
-        print(self.pool)
         proxy = random.choice(self.pool)
 
         if proxy["Usable"] == False:
@@ -129,7 +127,7 @@ class Manager:
         Checks if a proxy is valid by making a test request.
         """
         try:
-            for i in 5:
+            for i in range(5):
                 requests.get(variables.PROXY_TEST_URL, proxies={"http": address}, timeout=0.3)
             is_valid = True
         except:
@@ -144,40 +142,4 @@ class Manager:
         with open(self.proxypool_file, 'w') as pool:
             json.dump(self.pool, pool)
 
-
-#XXX: testing code
-import time
-# Initialize the Manager class with the path to the proxy pool file and the max requests per proxy.
-proxy_manager = Manager(proxypool_path='proxy_pool.json', max_requests_per_proxy=10)
-proxy_manager.update_pool()
-
-# URL of the "What's My IP" service
-whats_my_ip_url = "http://www.google.com/"
-
-# Perform 50 requests using proxies from the manager
-for i in range(50):
-    # Request a proxy from the manager
-    proxy = proxy_manager.request_proxy()
-    print(proxy)
-    try:
-        # Make a request to the "What's My IP" site using the fetched proxy
-        response = requests.get(whats_my_ip_url, proxies=proxy)
-        print(f"Request {i+1}: IP using proxy {proxy['http']}")
-        
-        # Update the proxy's usage count
-        for p in proxy_manager.pool:
-            if p['Address'] == proxy['http']:
-                p['UsageCount'] += 1
-        
-        # Save the updated pool
-        proxy_manager._save_pool()
-
-    except Exception as e:
-        print(f"F: {e}")
-
-    # Sleep to prevent overloading proxies and API
-    time.sleep(1)
-
-print("Testing complete.")
-
-#BUG: while updating proxies pool stays empty.
+#XXX: Note that some of the proxy servers get blocked.
